@@ -28,6 +28,7 @@ bot.on("message", async ctx => {
                 if (err) throw err;
                 if (row) {
                     const copied = await ctx.copyMessage(TO_CHANNEL_ID, {
+                        disable_notification: true,
                         reply_parameters: {
                             message_id: row.forwarded_to
                         },
@@ -61,6 +62,7 @@ bot.on("message", async ctx => {
                 db.run("INSERT INTO chats VALUES(?, ?)", [ replyTo.message_id, forward.message_id ]);
 
                 const copied = await ctx.copyMessage(TO_CHANNEL_ID, {
+                    disable_notification: true,
                     reply_parameters: {
                         message_id: forward.message_id,
                         chat_id: forward.chat.id
@@ -83,7 +85,7 @@ bot.on("message", async ctx => {
             return;
         }
 
-        const msg = await ctx.forwardMessage(TO_CHANNEL_ID).catch(() => null);
+        const msg = await ctx.forwardMessage(TO_CHANNEL_ID, { disable_notification: true }).catch(() => null);
         if (!msg) return;
 
         db.run("INSERT INTO chats VALUES(?, ?)", [ ctx.message.message_id, msg.message_id ]);
@@ -109,6 +111,7 @@ bot.on("message", async ctx => {
                 if (err) throw err;
                 if (row) {
                     const copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
+                        disable_notification: true,
                         reply_parameters: {
                             message_id: row.forwarded_to
                         },
@@ -142,6 +145,7 @@ bot.on("message", async ctx => {
                 db.run("INSERT INTO chats VALUES(?, ?)", [ replyTo.message_id, forward.message_id ]);
 
                 const copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
+                    disable_notification: true,
                     reply_parameters: {
                         message_id: forward.message_id,
                         chat_id: forward.chat.id
@@ -164,7 +168,7 @@ bot.on("message", async ctx => {
             return;
         }
 
-        const msg = await ctx.forwardMessage(FROM_CHANNEL_ID).catch(() => null);
+        const msg = await ctx.forwardMessage(FROM_CHANNEL_ID, { disable_notification: true }).catch(() => null);
         if (!msg) return;
 
         db.run("INSERT INTO chats VALUES(?, ?)", [ ctx.message.message_id, msg.message_id ]);
