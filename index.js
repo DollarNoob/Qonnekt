@@ -24,13 +24,14 @@ bot.on("message", async ctx => {
         const replyTo = ctx.message.reply_to_message;
         const origin = ctx.message.forward_origin;
         if (replyTo) {
-            db.get("SELECT forwarded_to FROM chats WHERE forwarded_from = ?", replyTo.message_id, async (err, row) => {
+            db.get("SELECT * FROM chats WHERE forwarded_from = ? OR forwarded_to = ?", [ replyTo.message_id, replyTo.message_id ], async (err, row) => {
                 if (err) throw err;
                 if (row) {
+                    const msgId = replyTo.message_id === row.forwarded_from ? row.forwarded_to : row.forwarded_from;
                     const copied = await ctx.copyMessage(TO_CHANNEL_ID, {
                         disable_notification: true,
                         reply_parameters: {
-                            message_id: row.forwarded_to
+                            message_id: msgId
                         },
                         reply_markup: {
                             inline_keyboard: [
@@ -107,13 +108,14 @@ bot.on("message", async ctx => {
         const replyTo = ctx.message.reply_to_message;
         const origin = ctx.message.forward_origin;
         if (replyTo) {
-            db.get("SELECT forwarded_to FROM chats WHERE forwarded_from = ?", replyTo.message_id, async (err, row) => {
+            db.get("SELECT * FROM chats WHERE forwarded_from = ? OR forwarded_to = ?", [ replyTo.message_id, replyTo.message_id ], async (err, row) => {
                 if (err) throw err;
                 if (row) {
+                    const msgId = replyTo.message_id === row.forwarded_from ? row.forwarded_to : row.forwarded_from;
                     const copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
                         disable_notification: true,
                         reply_parameters: {
-                            message_id: row.forwarded_to
+                            message_id: msgId
                         },
                         reply_markup: {
                             inline_keyboard: [
