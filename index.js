@@ -28,22 +28,33 @@ bot.on("message", async ctx => {
                 if (err) throw err;
                 if (row) {
                     const msgId = replyTo.message_id === row.forwarded_from ? row.forwarded_to : row.forwarded_from;
-                    const copied = await ctx.copyMessage(TO_CHANNEL_ID, {
-                        disable_notification: true,
-                        reply_parameters: {
-                            message_id: msgId
-                        },
-                        reply_markup: {
-                            inline_keyboard: [
-                                [
-                                    {
-                                        text: "Replied by " + (ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)),
-                                        callback_data: "replied"
-                                    }
+                    let copied;
+                    if (ctx.message.text) { // Text Message
+                        copied = await ctx.telegram.sendMessage(TO_CHANNEL_ID, `<a href="tg://user?id=${ctx.from.id}">${ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)}</a>: ${ctx.message.text.replace(/</g, "&lt;")}`, {
+                            disable_notification: true,
+                            reply_parameters: {
+                                message_id: msgId
+                            },
+                            parse_mode: "HTML"
+                        });
+                    } else {
+                        copied = await ctx.copyMessage(TO_CHANNEL_ID, {
+                            disable_notification: true,
+                            reply_parameters: {
+                                message_id: msgId
+                            },
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        {
+                                            text: "Replied by " + (ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)),
+                                            callback_data: "replied"
+                                        }
+                                    ]
                                 ]
-                            ]
-                        }
-                    }).catch(() => null);
+                            }
+                        }).catch(() => null);
+                    }
                     if (copied) {
                         db.run("INSERT INTO chats VALUES(?, ?)", [ ctx.message.message_id, copied.message_id ]);
                         return;
@@ -112,22 +123,33 @@ bot.on("message", async ctx => {
                 if (err) throw err;
                 if (row) {
                     const msgId = replyTo.message_id === row.forwarded_from ? row.forwarded_to : row.forwarded_from;
-                    const copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
-                        disable_notification: true,
-                        reply_parameters: {
-                            message_id: msgId
-                        },
-                        reply_markup: {
-                            inline_keyboard: [
-                                [
-                                    {
-                                        text: "Replied by " + (ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)),
-                                        callback_data: "replied"
-                                    }
+                    let copied;
+                    if (ctx.message.text) { // Text Message
+                        copied = await ctx.telegram.sendMessage(FROM_CHANNEL_ID, `<a href="tg://user?id=${ctx.from.id}">${ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)}</a>: ${ctx.message.text.replace(/</g, "&lt;")}`, {
+                            disable_notification: true,
+                            reply_parameters: {
+                                message_id: msgId
+                            },
+                            parse_mode: "HTML"
+                        });
+                    } else {
+                        copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
+                            disable_notification: true,
+                            reply_parameters: {
+                                message_id: msgId
+                            },
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        {
+                                            text: "Replied by " + (ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)),
+                                            callback_data: "replied"
+                                        }
+                                    ]
                                 ]
-                            ]
-                        }
-                    }).catch(() => null);
+                            }
+                        }).catch(() => null);
+                    }
                     if (copied) {
                         db.run("INSERT INTO chats VALUES(?, ?)", [ ctx.message.message_id, copied.message_id ]);
                         return;
