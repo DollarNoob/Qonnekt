@@ -36,7 +36,7 @@ bot.on("message", async ctx => {
                                 message_id: msgId
                             },
                             parse_mode: "HTML"
-                        });
+                        }).catch(() => null);
                     } else {
                         copied = await ctx.copyMessage(TO_CHANNEL_ID, {
                             disable_notification: true,
@@ -131,7 +131,7 @@ bot.on("message", async ctx => {
                                 message_id: msgId
                             },
                             parse_mode: "HTML"
-                        });
+                        }).catch(() => null);
                     } else {
                         copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
                             disable_notification: true,
