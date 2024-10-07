@@ -30,12 +30,11 @@ bot.on("message", async ctx => {
                     const msgId = replyTo.message_id === row.forwarded_from ? row.forwarded_to : row.forwarded_from;
                     let copied;
                     if (ctx.message.text) { // Text Message
-                        copied = await ctx.telegram.sendMessage(TO_CHANNEL_ID, `<a href="tg://user?id=${ctx.from.id}">${ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)}</a>: ${ctx.message.text.replace(/</g, "&lt;")}`, {
+                        copied = await ctx.telegram.sendMessage(TO_CHANNEL_ID, `${ctx.from.username ? ("＠" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)}: ${ctx.message.text}`, {
                             disable_notification: true,
                             reply_parameters: {
                                 message_id: msgId
-                            },
-                            parse_mode: "HTML"
+                            }
                         }).catch(() => null);
                     } else {
                         copied = await ctx.copyMessage(TO_CHANNEL_ID, {
@@ -125,12 +124,11 @@ bot.on("message", async ctx => {
                     const msgId = replyTo.message_id === row.forwarded_from ? row.forwarded_to : row.forwarded_from;
                     let copied;
                     if (ctx.message.text) { // Text Message
-                        copied = await ctx.telegram.sendMessage(FROM_CHANNEL_ID, `<a href="tg://user?id=${ctx.from.id}">${ctx.from.username ? ("@" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)}</a>: ${ctx.message.text.replace(/</g, "&lt;")}`, {
+                        copied = await ctx.telegram.sendMessage(FROM_CHANNEL_ID, `${ctx.from.username ? ("＠" + ctx.from.username) : (ctx.from.last_name ? ctx.from.first_name + " " + ctx.from.last_name : ctx.from.first_name)}: ${ctx.message.text}`, {
                             disable_notification: true,
                             reply_parameters: {
                                 message_id: msgId
-                            },
-                            parse_mode: "HTML"
+                            }
                         }).catch(() => null);
                     } else {
                         copied = await ctx.copyMessage(FROM_CHANNEL_ID, {
